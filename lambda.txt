@@ -1,0 +1,7 @@
+vector<Task> task = {{1, 10}, {2, 20}, {3, 30}};
+int target = 25;
+auto it =
+    lower_bound(task.begin(), task.end(), target,
+                [&](const Task &t, int val) { return t.priority < val; });
+if (it != task.end())
+  cout << it->id << endl;
