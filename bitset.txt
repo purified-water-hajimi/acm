@@ -33,4 +33,11 @@ int main() {
     b.flip(2);     // 将第 2 位取反
 
     return 0;
+  //4. 重新变为整数
+    long long my_int = (long long)b.to_ullong();     //bitset小于64则安全
+    unsigned long long low_64_val=0;
+    for(int i = 0; i < 64; i++) {
+	if(b.test(i)) {
+		low_64_val |= （1ULL << i);
+	}
 }
