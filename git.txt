@@ -1,0 +1,52 @@
+=========================================================
+                 Git 核心指令速查表
+=========================================================
+
+【1. 初始化与配置 (Setup)】
+git config --global user.name "Your Name"  # 设置全局用户名
+git config --global user.email "Your Email" # 设置全局邮箱
+git init                                   # 在当前目录初始化一个新的 Git 仓库
+git clone <url>                            # 克隆远程仓库到本地
+
+【2. 日常工作流 (Basic Workflow)】
+git status                                 # 查看当前工作区和暂存区的文件状态（最常用！）
+git add <file>                             # 将指定文件添加到暂存区
+git add .                                  # 将当前目录下所有变动的文件添加到暂存区
+git commit -m "commit message"             # 将暂存区的修改提交到本地仓库，并附带说明
+git diff                                   # 查看工作区与暂存区的代码差异
+git diff --staged                          # 查看暂存区与最后一次提交的代码差异
+
+【3. 分支管理 (Branching & Merging)】
+git branch                                 # 列出所有本地分支（带 * 的是当前分支）
+git branch <branch-name>                   # 创建新分支
+git checkout <branch-name>                 # 切换到指定分支 (旧版命令)
+git switch <branch-name>                   # 切换到指定分支 (新版推荐命令)
+git checkout -b <branch-name>              # 创建并直接切换到新分支
+git merge <branch-name>                    # 将指定分支合并到当前所在的分支
+git branch -d <branch-name>                # 删除本地分支
+
+【4. 远程仓库同步 (Remote Repositories)】
+git remote -v                              # 查看关联的远程仓库地址
+git fetch origin                           # 从远程仓库拉取最新代码，但不自动合并
+git pull origin <branch-name>              # 从远程拉取最新代码，并自动与本地合并
+git push origin <branch-name>              # 将本地分支的提交推送到远程仓库
+git push -f origin <branch-name>           # 强制推送到远程仓库（危险操作，慎用！）
+
+【5. 查看历史与撤销 (History & Undo)】
+git log                                    # 查看详细的提交历史
+git log --oneline                          # 查看简略版的提交历史（一行一个）
+git restore <file>                         # 撤销工作区中指定文件的修改（恢复到上次提交状态）
+git restore --staged <file>                # 将文件从暂存区移出（撤销 git add 操作）
+git reset --hard HEAD^                     # 彻底回退到上一个版本（丢弃所有未提交的修改）
+git reset --soft HEAD^                     # 回退到上一个版本（保留工作区和暂存区的修改）
+
+【6. 临时保存代码 (Stashing)】
+git stash                                  # 将当前未提交的修改（工作区和暂存区）临时藏起来
+git stash list                             # 查看目前藏起来的代码记录
+git stash pop                              # 恢复最近一次藏起来的代码，并从 stash 列表中删除
+git stash apply                            # 恢复最近一次藏起来的代码，但不从 stash 列表中删除
+
+=========================================================
+建议：在执行合并 (merge/pull) 或回退 (reset) 之前，
+务必先使用 git status 确认当前代码状态，以防代码丢失。
+=========================================================
