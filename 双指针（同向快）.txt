@@ -1,0 +1,8 @@
+for (int l = 1; l <= n; l++) {
+    if (r <= l) {
+      r = l + 1;
+    }
+    while (r <= n && query(l, r)) {
+      r++;
+    }
+ }

@@ -1,0 +1,16 @@
+for (int i = 0; i <= n; i++) {
+    for (int j = 0; j <= k; j++) {
+      dp[i][j][0] = dp[i][j][1] = -1e18;
+    }
+  }// 设置不可达状态
+  dp[0][0][0] = 0;  //初始化未操作状态
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j <= min(k, i); j++) {
+      dp[i][j][0] =
+          max({dp[i][j][0], a[i] + dp[i - 1][j][0], a[i] + dp[i - 1][j][1]});
+      dp[i][j][1] = max({dp[i][j][1], dp[i - 1][j][1] + b[i]});
+      if (j) 	 //特判
+        dp[i][j][1] = max(dp[i][j][1], dp[i - 1][j - 1][0] + b[i]);
+    }
+  }
+  int ans = -1e18; 	//注意负值
