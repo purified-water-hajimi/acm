@@ -1,0 +1,22 @@
+vector<int> graph[N];
+int mx, far;
+void dfs(int u, int p, int dist) {
+  if (dist > mx) {
+    mx = dist;
+    far = u;
+  }
+  for (int v : graph[u]) {
+    if (v != p)
+      dfs(v, u, dist + 1);
+  }
+}
+
+int main() {
+  mx = -1;
+  dfs(1, 0, 0); // 第一遍，从任意点 1 出发找到端点 far_point
+  int x = far;
+
+  mx = -1;
+  dfs(x, 0, 0); // 第二遍，从端点 x 出发找到另一个端点
+  int d = mx;
+}
