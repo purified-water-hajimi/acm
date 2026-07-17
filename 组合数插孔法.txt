@@ -1,0 +1,17 @@
+n个不受限的元素，m个不能相邻的元素，只有当 m<=n+1 时才有合法方案
+1.有重复部分
+// 假设总长度为 sum，各部分数量存在数组 cnt 中
+long long get_multiset_perm(vector<int>& cnt) {
+    long long sum = 0;
+    for (int x : cnt) sum += x;
+    
+    long long res = fact[sum]; // 分子：总数的阶乘
+    for (int x : cnt) {
+        // 分母：连续乘上各个部分数量的逆元
+        res = res * inv[x] % MOD; 
+    }
+    return res;
+}
+
+2.无重复部分
+(fact[n] * C(n + 1, m) % MOD) * fact[m] % MOD

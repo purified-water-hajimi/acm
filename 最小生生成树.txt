@@ -1,0 +1,95 @@
+// 1. 定义边结构体
+struct Edge {
+    int u, v;
+    long long w;
+    // 重载小于号，按边权从小到大排序
+    bool operator<(const Edge& other) const {
+        return w < other.w;
+    }
+};
+
+// 2. 并查集 (DSU) 模板 - 包含路径压缩和按秩（大小）合并
+struct DSU {
+    vector<int> parent, size;
+    
+    DSU(int n) {
+        parent.resize(n + 1);
+        size.resize(n + 1, 1);
+        // 初始化：每个节点的父节点是自己
+        iota(parent.begin(), parent.end(), 0);
+    }
+    
+    int find(int x) {
+        if (x == parent[x]) return x;
+        // 路径压缩
+        return parent[x] = find(parent[x]); 
+    }
+    
+    bool unite(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX != rootY) {
+            // 按大小合并，把小树合并到大树下面
+            if (size[rootX] < size[rootY]) swap(rootX, rootY);
+            parent[rootY] = rootX;
+            size[rootX] += size[rootY];
+            return true; // 合并成功
+        }
+        return false; // 原本就在同一个集合中
+    }
+};
+
+void solve() {
+    int n, m; // n 个点, m 条边
+    cin >> n >> m;
+    
+    vector<Edge> edges(m);
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i].u >> edges[i].v >> edges[i].w;
+    }
+    
+    // 步骤一：将所有边按权值从小到大排序
+    sort(edges.begin(), edges.end());
+    
+    DSU dsu(n);
+    long long mst_weight = 0; // 最小生成树的总权值
+    int edge_cnt = 0;         // 记录加入了多少条边
+    vector<Edge> mst_edges;   // 如果需要记录具体是哪些边，可以存在这里
+    
+    // 步骤二：从小到大遍历所有边
+    for (const auto& edge : edges) {
+        // 如果加入这条边不会形成环 (即两个端点不在同一个集合)
+        if (dsu.unite(edge.u, edge.v)) {
+            mst_weight += edge.w;
+            mst_edges.push_back(edge);
+            edge_cnt++;
+            
+            // 优化：一旦加入了 n - 1 条边，最小生成树已经构建完毕，可以直接退出
+            if (edge_cnt == n - 1) {
+                break;
+            }
+        }
+    }
+    
+    // 步骤三：判断是否成功构建了最小生成树 (图是否连通)
+    if (edge_cnt == n - 1) {
+        cout << "MST Weight: " << mst_weight << "\n";
+        // 如果需要输出边：
+        // for(auto e : mst_edges) cout << e.u << " " << e.v << "\n";
+    } else {
+        // 如果图不连通，则不存在覆盖所有点的最小生成树
+        cout << "Impossible" << "\n";
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    int t = 1;
+    // cin >> t; // 如果有多组数据请取消注释
+    while (t--) {
+        solve();
+    }
+    return 0;
+}
+复杂度mlogm

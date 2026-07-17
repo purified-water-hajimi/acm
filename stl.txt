@@ -1,0 +1,13 @@
+prev: 获取迭代器钱一个位置
+auto it = mp.end(); // 先拿到空气
+it--;               // 往回退一步，此时才真正指到最后一个元素
+int max_val = it->first;
+
+auto it = prev(mp.end());
+O(1)
+
+std::prev(it)：返回 it 的前一个位置。
+
+std::next(it)：返回 it 的后一个位置。
+
+std::advance(it, n)：把迭代器 it 往前（或往后）直接移动 n 步。
