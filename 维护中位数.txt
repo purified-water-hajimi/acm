@@ -1,0 +1,17 @@
+void addnum(int num) {
+  big.push(num);
+  small.push(big.top());
+  big.pop();
+  if (small.size() > big.size()) {
+    big.push(small.top());
+    small.pop();
+  }
+}
+
+double findmedian() {
+  if (big.size() > small.size()) {
+    return big.top();
+  } else {
+    return (big.top() + small.top()) / 2.0;
+  }
+}

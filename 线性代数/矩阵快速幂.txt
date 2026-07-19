@@ -1,0 +1,76 @@
+const long long MOD = 1e9 + 7; 
+
+struct Matrix {
+    int row, col;
+    vector<vector<long long>> mat;
+
+    Matrix(int r, int c) : row(r), col(c), mat(r, vector<long long>(c, 0)) {}
+
+    void make_identity() {
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                mat[i][j] = (i == j) ? 1 : 0;
+            }
+        }
+    }
+
+    Matrix operator*(const Matrix& other) const {
+        Matrix res(row, other.col);
+        
+        for (int i = 0; i < row; ++i) {
+            for (int k = 0; k < col; ++k) {
+                if (mat[i][k] == 0) continue; 
+                for (int j = 0; j < other.col; ++j) {
+                    res.mat[i][j] = (res.mat[i][j] + mat[i][k] * other.mat[k][j]) % MOD;
+                }
+            }
+        }
+        return res;
+    }
+    
+
+    Matrix operator+(const Matrix& other) const {
+        Matrix res(row, col);
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                res.mat[i][j] = (mat[i][j] + other.mat[i][j]) % MOD;
+            }
+        }
+        return res;
+    }
+};
+
+Matrix qpow(Matrix base, long long exp) {
+    Matrix res(base.row, base.col);
+    res.make_identity(); // 相当于 res = 1
+    
+    while (exp > 0) {
+        if (exp & 1) {
+            res = res * base;
+        }
+        base = base * base;
+        exp >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    long long n = 10;
+
+    Matrix base(2, 2);
+    base.mat[0][0] = 1; base.mat[0][1] = 1;
+    base.mat[1][0] = 1; base.mat[1][1] = 0;
+    
+    Matrix start(1, 2);
+    start.mat[0][0] = 1; start.mat[0][1] = 0;
+    
+    if (n == 0) cout << 0 << "\n";
+    else {
+
+        Matrix T = qpow(base, n - 1);
+        Matrix ans = start * T;
+        cout << ans.mat[0][0] << "\n";
+    }
+    
+    return 0;
+}
