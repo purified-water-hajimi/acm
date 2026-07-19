@@ -1,0 +1,77 @@
+const int N = 5e5 + 10;
+// log2(N) 向上取整。20 可以处理到 10^6 级别的节点数。
+const int LOG = 20;     
+
+vector<int> adj[N];    
+int depth[N];        
+int fa[N][LOG];        
+
+void dfs(int u, int p) {
+    depth[u] = depth[p] + 1;
+    fa[u][0] = p;      
+    for (int v : adj[u]) {
+        if (v != p) {
+            dfs(v, u);
+        }
+    }
+}
+
+void init(int n, int root) {
+    depth[0] = 0; 
+    dfs(root, 0);
+    for (int j = 1; j < LOG; j++) {
+        for (int i = 1; i <= n; i++) {
+            fa[i][j] = fa[ fa[i][j-1] ][j-1];
+        }
+    }
+}
+
+int lca(int u, int v) {
+    if (depth[u] < depth[v]) {
+        swap(u, v);
+    }
+    
+
+    for (int i = LOG - 1; i >= 0; i--) {
+        if (depth[fa[u][i]] >= depth[v]) {
+            u = fa[u][i];
+        }
+    }
+    
+    if (u == v) return u;
+    
+    for (int i = LOG - 1; i >= 0; i--) {
+        if (fa[u][i] != fa[v][i]) {
+            u = fa[u][i];
+            v = fa[v][i];
+        }
+    }
+    
+    return fa[u][0];
+}
+
+int main() {
+
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, m, root;
+    cin >> n >> m >> root;
+    
+    for (int i = 1; i < n; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+        init(n, root);
+    
+    // 处理查询
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        cout << lca(u, v) << "\n";
+    }
+    
+    return 0;
+}
