@@ -1,0 +1,28 @@
+int f(int x) {
+    // 算逻辑
+    return 0; 
+}
+
+int ternarySearchInt(int l, int r) {
+    while (r - l > 2) {
+        int m1 = l + (r - l) / 3;
+        int m2 = r - (r - l) / 3;
+        if (f(m1) < f(m2)) {
+            l = m1; 
+        } else {
+            r = m2; 
+        }
+    }
+    
+    int max_val = f(l);
+    int best_pos = l;
+    for (int i = l + 1; i <= r; i++) {
+        int cur_val = f(i);
+        if (cur_val > max_val) {
+            max_val = cur_val;
+            best_pos = i;
+        }
+    }
+    
+    return best_pos;
+}

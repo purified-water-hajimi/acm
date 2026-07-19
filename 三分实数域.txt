@@ -1,0 +1,23 @@
+#include <iostream>
+using namespace std;
+
+double f(double x) {
+    return -x * x + 4 * x; 
+}
+
+double ternarySearchDouble(double l, double r) {
+    // 循环 100 次。每次区间缩小 2/3，100 次后区间长度会乘以 (2/3)^100
+    // 这个数字已经远远小于浮点数的精度极限 (大约是 1e-17)，绝对够用。
+    for (int i = 0; i < 100; i++) {
+        double m1 = l + (r - l) / 3.0;
+        double m2 = r - (r - l) / 3.0;
+        
+        if (f(m1) < f(m2)) {
+            l = m1;
+        } else {
+            r = m2;
+        }
+    }
+    // 循环结束后 l 和 r 已经无限接近，返回谁都可以
+    return l; 
+}

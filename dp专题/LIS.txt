@@ -1,0 +1,15 @@
+int lengthOfLIS(const vector<int>& nums) {
+    if (nums.empty()) return 0;
+    vector<int> low; 
+    
+    for (int x : nums) {
+        auto it = lower_bound(low.begin(), low.end(), x);
+        if (it == low.end()) {
+            low.push_back(x);
+        } else {
+            *it = x; 
+        }
+    }
+    
+    return low.size();
+}
