@@ -1,0 +1,113 @@
+struct BigInt {
+    vector<int> d;
+
+    BigInt() {}
+    
+    BigInt(string s) {
+        if (s.empty()) return;
+        for (int i = s.length() - 1; i >= 0; i--) {
+            d.push_back(s[i] - '0');
+        }
+        trim();
+    }
+    
+    void trim() {
+        while (d.size() > 1 && d.back() == 0) {
+            d.pop_back();
+        }
+    }
+
+    BigInt operator+(const BigInt& b) const {
+        BigInt c;
+        int t = 0;
+        for (size_t i = 0; i < d.size() || i < b.d.size() || t; ++i) {
+            if (i < d.size()) t += d[i];
+            if (i < b.d.size()) t += b.d[i];
+            c.d.push_back(t % 10);
+            t /= 10;
+        }
+        return c;
+    }
+
+    BigInt operator-(const BigInt& b) const {
+        BigInt c;
+        int t = 0;
+        for (size_t i = 0; i < d.size(); ++i) {
+            t = d[i] - t;
+            if (i < b.d.size()) t -= b.d[i];
+            c.d.push_back((t + 10) % 10);
+            if (t < 0) t = 1;
+            else t = 0;
+        }
+        c.trim(); 
+        return c;
+    }
+
+
+    BigInt operator*(const BigInt& b) const {
+        BigInt c;
+        if (d.empty() || b.d.empty()) return c;
+        c.d.assign(d.size() + b.d.size(), 0);
+        for (size_t i = 0; i < d.size(); ++i) {
+            for (size_t j = 0; j < b.d.size(); ++j) {
+                c.d[i + j] += d[i] * b.d[j];
+                c.d[i + j + 1] += c.d[i + j] / 10; 
+                c.d[i + j] %= 10;
+            }
+        }
+        c.trim();
+        return c;
+    }
+    
+
+    bool operator<(const BigInt& b) const {
+        if (d.size() != b.d.size()) return d.size() < b.d.size();
+        for (int i = d.size() - 1; i >= 0; i--) {
+            if (d[i] != b.d[i]) return d[i] < b.d[i];
+        }
+        return false;
+    }
+    
+    bool operator==(const BigInt& b) const {
+        return d == b.d;
+    }
+};
+
+
+ostream& operator<<(ostream& os, const BigInt& a) {
+    if (a.d.empty()) {
+        os << 0;
+        return os;
+    }
+
+    for (int i = a.d.size() - 1; i >= 0; i--) {
+        os << a.d[i];
+    }
+    return os;
+}
+
+
+istream& operator>>(istream& is, BigInt& a) {
+    string s;
+    is >> s;
+    a = BigInt(s);
+    return is;
+}
+
+int main() {
+    // 使用示例
+    BigInt a, b;
+    cin >> a >> b;
+    
+    cout << "A + B = " << (a + b) << "\n";
+    
+    if (a < b) {
+        cout << "A - B 是负数，这里仅展示大减小：-" << (b - a) << "\n";
+    } else {
+        cout << "A - B = " << (a - b) << "\n";
+    }
+    
+    cout << "A * B = " << (a * b) << "\n";
+    
+    return 0;
+}

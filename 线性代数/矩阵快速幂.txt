@@ -1,3 +1,6 @@
+//适用场景：线性递推（加法或乘常数）
+//规模大：第1e9项
+//图论连通性与路径计数
 const long long MOD = 1e9 + 7; 
 
 struct Matrix {
@@ -38,6 +41,28 @@ struct Matrix {
         }
         return res;
     }
+};
+
+//状态行向量优化
+struct Vector {
+  int v[5];
+  Vector() {
+    for (int i = 0; i < 5; i++)
+      v[i] = INF;
+  }
+  Vector operator*(const Matrix &mat) const {
+    Vector res;
+    for (int k = 0; k < c; k++) {
+      if (v[k] == INF)
+        continue;
+      for (int j = 0; j < c; j++) {
+        if (mat.m[k][j] == INF)
+          continue;
+        res.v[j] = min(res.v[j], v[k] + mat.m[k][j]);
+      }
+    }
+    return res;
+  }
 };
 
 Matrix qpow(Matrix base, long long exp) {

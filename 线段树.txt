@@ -1,0 +1,92 @@
+Ologn
+const int MAXN = 100005; 
+ll tree[MAXN << 2];    
+ll lazy_tag[MAXN << 2];  
+ll arr[MAXN];       
+
+void push_up(int node) {
+    tree[node] = tree[node << 1] + tree[node << 1 | 1];
+}
+
+void push_down(int node, int left_len, int right_len) {
+    if (lazy_tag[node]) {
+        lazy_tag[node << 1] += lazy_tag[node];
+        tree[node << 1] += lazy_tag[node] * left_len;
+        lazy_tag[node << 1 | 1] += lazy_tag[node];
+        tree[node << 1 | 1] += lazy_tag[node] * right_len;
+        lazy_tag[node] = 0;
+    }
+}
+
+void build(int node, int start, int end) {
+    lazy_tag[node] = 0;
+    if (start == end) {
+        tree[node] = arr[start];
+        return;
+    }
+    int mid = (start + end) >> 1;
+    build(node << 1, start, mid);
+    build(node << 1 | 1, mid + 1, end);
+    push_up(node); 
+}
+
+void update_range(int node, int start, int end, int l, int r, ll val) {
+    if (l <= start && end <= r) {
+        tree[node] += val * (end - start + 1);
+        lazy_tag[node] += val;
+        return;
+    }
+    
+    int mid = (start + end) >> 1;
+    push_down(node, mid - start + 1, end - mid);
+    
+    if (l <= mid) update_range(node << 1, start, mid, l, r, val);
+    if (r > mid) update_range(node << 1 | 1, mid + 1, end, l, r, val);
+    
+    push_up(node);
+}
+
+
+ll query_range(int node, int start, int end, int l, int r) {
+    if (l <= start && end <= r) {
+        return tree[node];
+    }
+    
+    int mid = (start + end) >> 1;
+    push_down(node, mid - start + 1, end - mid);
+    
+    ll res = 0;
+    if (l <= mid) res += query_range(node << 1, start, mid, l, r);
+    if (r > mid) res += query_range(node << 1 | 1, mid + 1, end, l, r);
+    3d 
+    return res;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
+    int n, q; // n 为元素个数，q 为操作次数
+    if (cin >> n >> q) {
+        for (int i = 1; i <= n; i++) {
+            cin >> arr[i];
+        }
+        build(1, 1, n);
+        
+        while (q--) {
+            int type;
+            cin >> type;
+            if (type == 1) {
+                int l, r;
+                ll val;
+                cin >> l >> r >> val;
+                update_range(1, 1, n, l, r, val);
+            } else if (type == 2) {
+                int l, r;
+                cin >> l >> r;
+                cout << query_range(1, 1, n, l, r) << "\n";
+            }
+        }
+    }
+    return 0;
+}
